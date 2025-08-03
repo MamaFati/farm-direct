@@ -1,28 +1,49 @@
 import React, { useState } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import { validateForm } from '../utils/validateForm';
 
-const Login = ({ onLogin }) => {
+const Login = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [errors, setErrors] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   const fields = [
     { name: 'email', label: 'Email', type: 'email' },
     { name: 'password', label: 'Password', type: 'password' },
   ];
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const validationErrors = validateForm(formData, fields);
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       return;
     }
+
+    setIsLoading(true);
     try {
-      onLogin(formData.email, formData.password);
+      const response = await axios.post('https://farmdirect-production.up.railway.app/api/v1/auth/login/', {
+        email: formData.email,
+        password: formData.password,
+      });
+      const { token, user } = response.data;
+      localStorage.setItem('token', token); // Store JWT token
       setFormData({ email: '', password: '' });
       setErrors({});
+      // Redirect based on user role
+      if (user.role === 'farmer') {
+        navigate('/farmer-dashboard');
+      } else if (user.role === 'customer') {
+        navigate('/customer-dashboard');
+      } else {
+        setErrors({ general: 'Invalid user role.' });
+      }
     } catch (error) {
-      setErrors({ general: error.message });
+      setErrors({ general: error.response?.data?.message || 'Login failed. Please try again.' });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -53,6 +74,7 @@ const Login = ({ onLogin }) => {
                 onChange={(e) => setFormData({ ...formData, [field.name]: e.target.value })}
                 className="mt-1 block w-full p-2 sm:p-2 md:p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-sm sm:text-sm md:text-base"
                 aria-label={field.label}
+                disabled={isLoading}
               />
               {errors[field.name] && (
                 <p className="text-red-500 text-xs sm:text-sm mt-1">
@@ -63,10 +85,11 @@ const Login = ({ onLogin }) => {
           ))}
           <button
             type="submit"
-            className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 sm:py-2 md:py-3 px-4 sm:px-6 rounded-lg shadow transition focus:outline-none focus:ring-2 focus:ring-green-500 text-sm sm:text-base md:text-lg"
-            aria-label="Submit login form"
+            className={`w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 sm:py-2 md:py-3 px-4 sm:px-6 rounded-lg shadow transition focus:outline-none focus:ring-2 focus:ring-green-500 text-sm sm:text-base md:text-lg ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+            aria-label={isLoading ? 'Logging in' : 'Submit login form'}
+            disabled={isLoading}
           >
-            Login
+            {isLoading ? 'Logging in...' : 'Login'}
           </button>
         </form>
       </div>
