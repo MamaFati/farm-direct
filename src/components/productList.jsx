@@ -23,48 +23,48 @@ const ProductList = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <h2 className="text-2xl font-bold mb-4 text-center">Available Products</h2>
+      <h2 className="text-2xl font-bold mb-4 text-center text-white">Available Products</h2>
       <div className="mb-4 space-y-4">
         <input
           type="text"
           placeholder="Search products..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-green-500"
+          className="w-full p-2   bg-gray-300/50 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
         />
         <div className="flex space-x-4">
           <select
             value={category}
             onChange={(e) => setCategory(e.target.value)}
-            className="p-2 border rounded focus:outline-none focus:ring-2 focus:ring-green-500"
+            className="p-2  bg-gray-300/50 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
           >
-            <option value="">All Categories</option>
+            <option value="" >All Categories</option>
             <option value="vegetables">Vegetables</option>
             <option value="fruits">Fruits</option>
             <option value="grains">Grains</option>
             <option value="dairy">Dairy</option>
           </select>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Price Range</label>
+            <label className="block text-sm font-medium text-white">Price Range</label>
             <input
               type="number"
               placeholder="Min"
               value={priceRange[0]}
               onChange={(e) => setPriceRange([+e.target.value, priceRange[1]])}
-              className="p-2 border rounded w-24 mr-2"
+              className="p-2  bg-gray-300/50 rounded w-24 mr-2"
             />
             <input
               type="number"
               placeholder="Max"
               value={priceRange[1]}
               onChange={(e) => setPriceRange([priceRange[0], +e.target.value])}
-              className="p-2 border rounded w-24"
+              className="p-2  bg-gray-300/50 rounded w-24"
             />
           </div>
         </div>
       </div>
       {products.length === 0 ? (
-        <p className=" text-center text-7xl italic text-white font-bold ">Out Of Stock </p>
+        <p className=" text-center text-4xl italic text-white font-bold ">No products found</p>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
           {products.map(product => (

@@ -52,8 +52,8 @@ const Register = ({ onRegister }) => {
             onChange={(e) => setFormData({ ...formData, role: e.target.value })}
             className="mt-1 block w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-green-500"
           >
-            <option value="customer">Customer</option>
-            <option value="farmer">Farmer</option>
+            <option value="customer" className="hover:cursor-pointer hover:bg-gray-200">Customer</option>
+            <option value="farmer" className="hover:cursor-pointer hover:bg-gray-200">Farmer</option>
           </select>
         </div>
         {fields.map(field => (
