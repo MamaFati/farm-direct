@@ -20,7 +20,7 @@ const OrderHistory = () => {
       setIsLoading(true);
       try {
         const response = await axios.get('https://farmdirect-production.up.railway.app/api/v1/orders/', {
-          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+          
         });
         const userOrders = response.data.filter(order => order.userId === user.id);
         setOrders(userOrders);
